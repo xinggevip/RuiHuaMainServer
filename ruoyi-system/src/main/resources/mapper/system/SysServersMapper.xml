@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysServersMapper">
+    
+    <resultMap type="SysServers" id="SysServersResult">
+        <result property="serverId"    column="server_id"    />
+        <result property="serverName"    column="server_name"    />
+        <result property="serverIp"    column="server_ip"    />
+        <result property="serverCpuid"    column="server_cpuid"    />
+        <result property="serverLocalPath"    column="server_local_path"    />
+        <result property="serverBackupPath"    column="server_backup_path"    />
+        <result property="serverOpenBackup"    column="server_open_backup"    />
+    </resultMap>
+
+    <sql id="selectSysServersVo">
+        select server_id, server_name, server_ip, server_cpuid, server_local_path, server_backup_path, server_open_backup from sys_servers
+    </sql>
+
+    <select id="selectSysServersList" parameterType="SysServers" resultMap="SysServersResult">
+        <include refid="selectSysServersVo"/>
+        <where>  
+            <if test="serverName != null  and serverName != ''"> and server_name like concat('%', #{serverName}, '%')</if>
+            <if test="serverIp != null  and serverIp != ''"> and server_ip = #{serverIp}</if>
+            <if test="serverCpuid != null  and serverCpuid != ''"> and server_cpuid = #{serverCpuid}</if>
+            <if test="serverLocalPath != null  and serverLocalPath != ''"> and server_local_path = #{serverLocalPath}</if>
+            <if test="serverBackupPath != null  and serverBackupPath != ''"> and server_backup_path = #{serverBackupPath}</if>
+            <if test="serverOpenBackup != null "> and server_open_backup = #{serverOpenBackup}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysServersById" parameterType="Long" resultMap="SysServersResult">
+        <include refid="selectSysServersVo"/>
+        where server_id = #{serverId}
+    </select>
+        
+    <insert id="insertSysServers" parameterType="SysServers" useGeneratedKeys="true" keyProperty="serverId">
+        insert into sys_servers
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serverName != null">server_name,</if>
+            <if test="serverIp != null">server_ip,</if>
+            <if test="serverCpuid != null">server_cpuid,</if>
+            <if test="serverLocalPath != null">server_local_path,</if>
+            <if test="serverBackupPath != null">server_backup_path,</if>
+            <if test="serverOpenBackup != null">server_open_backup,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serverName != null">#{serverName},</if>
+            <if test="serverIp != null">#{serverIp},</if>
+            <if test="serverCpuid != null">#{serverCpuid},</if>
+            <if test="serverLocalPath != null">#{serverLocalPath},</if>
+            <if test="serverBackupPath != null">#{serverBackupPath},</if>
+            <if test="serverOpenBackup != null">#{serverOpenBackup},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysServers" parameterType="SysServers">
+        update sys_servers
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serverName != null">server_name = #{serverName},</if>
+            <if test="serverIp != null">server_ip = #{serverIp},</if>
+            <if test="serverCpuid != null">server_cpuid = #{serverCpuid},</if>
+            <if test="serverLocalPath != null">server_local_path = #{serverLocalPath},</if>
+            <if test="serverBackupPath != null">server_backup_path = #{serverBackupPath},</if>
+            <if test="serverOpenBackup != null">server_open_backup = #{serverOpenBackup},</if>
+        </trim>
+        where server_id = #{serverId}
+    </update>
+
+    <delete id="deleteSysServersById" parameterType="Long">
+        delete from sys_servers where server_id = #{serverId}
+    </delete>
+
+    <delete id="deleteSysServersByIds" parameterType="String">
+        delete from sys_servers where server_id in 
+        <foreach item="serverId" collection="array" open="(" separator="," close=")">
+            #{serverId}
+        </foreach>
+    </delete>
+    
+</mapper>
