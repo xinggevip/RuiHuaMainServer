@@ -23,19 +23,15 @@ service.interceptors.request.use(config => {
   if (config.method === 'get' && config.params) {
     let url = config.url + '?';
     for (const propName of Object.keys(config.params)) {
-      let value = config.params[propName];
+      const value = config.params[propName];
       var part = encodeURIComponent(propName) + "=";
-      if (typeof(value) !== "undefined") {
+      if (value !== null && typeof(value) !== "undefined") {
         if (typeof value === 'object') {
-          if (value === null) {
-            value = '';
-          }
           for (const key of Object.keys(value)) {
             let params = propName + '[' + key + ']';
             var subPart = encodeURIComponent(params) + "=";
             url += subPart + encodeURIComponent(value[key]) + "&";
           }
-
         } else {
           url += part + encodeURIComponent(value) + "&";
         }
